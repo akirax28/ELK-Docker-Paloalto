@@ -1,2 +1,2 @@
-# Elastic stack (ELK) on Docker + Paloalto
+# Elastic stack (ELK) on Docker + Paloalto.
 
