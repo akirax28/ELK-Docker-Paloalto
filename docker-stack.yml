@@ -125,7 +125,7 @@ configs:
   kibana_config:
     file: ./kibana/config/kibana.yml
     
-volume:
+volumes:
   elastic_data02:
   elastic_data03:
 networks:
