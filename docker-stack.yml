@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -30,7 +30,7 @@ services:
     networks:
       - elk
     volumes:
-      - elastic_data2:/usr/share/elasticsearch/data
+      - elastic_data02:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
   elasticsearch3:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
@@ -41,8 +41,8 @@ services:
     networks:
       - elk
     volumes:
-      - elastic_data3:/usr/share/elasticsearch/data
-      - /etc/localtime:/etc/localtime      
+      - elastic_data03:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
 
   logstash:
     image: docker.elastic.co/logstash/logstash:6.6.0
@@ -126,8 +126,8 @@ configs:
     file: ./kibana/config/kibana.yml
     
 volume:
-  elastic_data2:
-  elastic_data3:
+  elastic_data02:
+  elastic_data03:
 networks:
   elk:
     driver: overlay
