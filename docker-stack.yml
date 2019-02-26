@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 
 services:
 
@@ -7,10 +7,11 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    configs:
-      - source: elastic_config
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
+#    configs:
+#      - source: elastic_config
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
+      cluster.name: docker-cluster
       ES_JAVA_OPTS: "-Xmx16g -Xms16g"
     networks:
       - elk
@@ -20,7 +21,29 @@ services:
     volumes:
       - /data/elk:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
-    
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    environment:
+      cluster.name: docker-cluster
+      ES_JAVA_OPTS: "-Xmx2g -Xms2g"
+      discovery.zen.ping.unicast.hosts: elasticsearch
+    networks:
+      - elk
+    volumes:
+      - elastic_data2:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
+  elasticsearch3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    environment:
+      cluster.name: docker-cluster
+      ES_JAVA_OPTS: "-Xmx2g -Xms2g"
+      discovery.zen.ping.unicast.hosts: elasticsearch
+    networks:
+      - elk
+    volumes:
+      - elastic_data3:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime      
+
   logstash:
     image: docker.elastic.co/logstash/logstash:6.6.0
     ports:
@@ -102,7 +125,9 @@ configs:
   kibana_config:
     file: ./kibana/config/kibana.yml
     
-
+volume:
+  elastic_data2:
+  elastic_data3:
 networks:
   elk:
     driver: overlay
