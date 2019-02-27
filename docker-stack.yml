@@ -7,9 +7,9 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    configs:
-      - source: elastic_config
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
+#    configs:
+#      - source: elastic_config
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       cluster.name: docker-cluster
       ES_JAVA_OPTS: "-Xmx2g -Xms2g"
