@@ -12,7 +12,7 @@ services:
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx16g -Xms16g"
+      ES_JAVA_OPTS: "-Xmx2g -Xms2g"
     networks:
       - elk
     deploy:
