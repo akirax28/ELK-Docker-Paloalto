@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 
 services:
 
@@ -7,12 +7,12 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    #configs:
-    #  - source: elastic_config
-    #    target: /usr/share/elasticsearch/config/elasticsearch.yml
+#    configs:
+#      - source: elastic_config
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx16g -Xms16g"
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
     networks:
       - elk
     deploy:
@@ -21,23 +21,47 @@ services:
     volumes:
       - /data/elk:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
-
   elasticsearch2:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx2g -Xms2g"
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
     volumes:
       - elastic_data02:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
+  elasticsearch3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    environment:
+      cluster.name: docker-cluster
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      discovery.zen.ping.unicast.hosts: elasticsearch
+    networks:
+      - elk
+    volumes:
+      - elastic_data03:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
+
+  elasticsearch4:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    environment:
+      cluster.name: docker-cluster
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      discovery.zen.ping.unicast.hosts: elasticsearch
+    networks:
+      - elk
+    volumes:
+      - elastic_data04:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
+
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.6.1
+    image: docker.elastic.co/logstash/logstash:6.6.0
     ports:
       - "5000:5000"
+      - "5000:5000/udp"
       - "514:5000/udp"
       - "514:5000"
       - "9600:9600"
@@ -49,11 +73,22 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
       - source: logstash_elasticsearch-template.json
         target: /opt/logstash/elasticsearch-template.json
+      #- source: logstash_winad
+      #  target: /usr/share/logstash/pipeline/winad.conf
+      ###fim original
+      #- source: 01-input.conf
+      #  target: /etc/logstash/conf.d/01-input.conf
+      #- source: 11-pfsense.conf
+      #  target: /etc/logstash/conf.d/11-pfsense.conf
+      #- source: 10-syslog.conf
+      #  target: /etc/logstash/conf.d/10.syslog.conf
+      #- source: 30-outputs.conf
+      #  target: /etc/logstash/conf.d/30-outputs.conf
       - source: pfsense.grok
         target: /etc/logstash/conf.d/patterns/pfsense.grok
         
     environment:
-      LS_JAVA_OPTS: "-Xmx16g -Xms16g"
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
     networks:
       - elk
     volumes:
@@ -63,7 +98,7 @@ services:
       replicas: 1
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.6.1
+    image: docker.elastic.co/kibana/kibana:6.6.0
     ports:
       - "5601:5601"
     configs:
@@ -78,22 +113,36 @@ services:
       replicas: 1
 
 configs:
+##elasticsearsh configs
+  elastic_config:
+    file: ./elasticsearch/config/elasticsearch.yml
 #Logstash configs
   logstash_config:
     file: ./logstash/config/logstash.yml
+  #01-input.conf:
+  #  file: ./logstash/config/01-inputs.conf
+  #10-syslog.conf:
+  #  file: ./logstash/config/10-syslog.conf
+  #11-pfsense.conf:
+  #  file: ./logstash/config/11-pfsense.conf
+  #30-outputs.conf:
+  #  file: ./logstash/config/30-outputs.conf
   pfsense.grok:
     file: ./logstash/pipeline/pfsense.grok
   logstash_pipeline:
     file: ./logstash/pipeline/logstash.conf
   logstash_elasticsearch-template.json:
     file: ./logstash/pipeline/elasticsearch-template.json
+  #logstash_winad:
+  #  file: ./logstash/pipeline/winad.conf
 #kibana config
   kibana_config:
     file: ./kibana/config/kibana.yml
-
+    
 volumes:
   elastic_data02:
-
+  elastic_data03:
+  elastic_data04:
 networks:
   elk:
     driver: overlay
