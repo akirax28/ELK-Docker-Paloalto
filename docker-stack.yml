@@ -60,8 +60,8 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:6.6.1
     ports:
-      - "5000:5000"
-      - "5000:5000/udp"
+      #- "5000:5000"
+      #- "5000:5000/udp"
       - "514:5000/udp"
       - "514:5000"
       - "9600:9600"
