@@ -29,9 +29,9 @@ services:
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
-    volumes:
-      - elastic_data02:/usr/share/elasticsearch/data
-      - /etc/localtime:/etc/localtime
+#    volumes:
+#      - elastic_data02:/usr/share/elasticsearch/data
+#      - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
       
@@ -43,9 +43,9 @@ services:
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
-    volumes:
-      - elastic_data03:/usr/share/elasticsearch/data
-      - /etc/localtime:/etc/localtime
+#    volumes:
+#      - elastic_data03:/usr/share/elasticsearch/data
+#      - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
       
@@ -57,9 +57,9 @@ services:
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
-    volumes:
-      - elastic_data04:/usr/share/elasticsearch/data
-      - /etc/localtime:/etc/localtime
+#    volumes:
+#      - elastic_data04:/usr/share/elasticsearch/data
+#      - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
 
@@ -149,10 +149,10 @@ configs:
   kibana_config:
     file: ./kibana/config/kibana.yml
     
-volumes:
-  elastic_data02:
-  elastic_data03:
-  elastic_data04:
+#volumes:
+#  elastic_data02:
+#  elastic_data03:
+#  elastic_data04:
 networks:
   elk:
     driver: overlay
