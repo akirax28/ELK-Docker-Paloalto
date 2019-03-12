@@ -12,7 +12,7 @@ services:
 #        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ES_JAVA_OPTS: "-Xmx16g -Xms16g"
     networks:
       - elk
     deploy:
@@ -25,7 +25,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
@@ -36,7 +36,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
@@ -48,7 +48,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
@@ -88,7 +88,7 @@ services:
         target: /etc/logstash/conf.d/patterns/pfsense.grok
         
     environment:
-      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      LS_JAVA_OPTS: "-Xmx6g -Xms6g"
     networks:
       - elk
     volumes:
