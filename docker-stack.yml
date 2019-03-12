@@ -79,8 +79,6 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
       - source: logstash_elasticsearch-template.json
         target: /opt/logstash/elasticsearch-template.json
-    depends_on:
-      - elasticsearch
       #- source: logstash_winad
       #  target: /usr/share/logstash/pipeline/winad.conf
       ###fim original
@@ -94,6 +92,8 @@ services:
       #  target: /etc/logstash/conf.d/30-outputs.conf
       - source: pfsense.grok
         target: /etc/logstash/conf.d/patterns/pfsense.grok
+    depends_on:
+      - elasticsearch
         
     environment:
       LS_JAVA_OPTS: "-Xmx6g -Xms6g"
