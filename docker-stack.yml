@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -12,7 +12,7 @@ services:
 #        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx16g -Xms16g"
+      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
     networks:
       - elk
     deploy:
@@ -22,43 +22,49 @@ services:
       - /data/elk:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
   elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx16g -Xms16g"
+      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
     volumes:
       - elastic_data02:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
+    depends_on:
+      - elasticsearch
+      
   elasticsearch3:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx16g -Xms16g"
+      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
     volumes:
       - elastic_data03:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
-
+    depends_on:
+      - elasticsearch
+      
   elasticsearch4:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     environment:
       cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx16g -Xms16g"
+      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
       discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
     volumes:
       - elastic_data04:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
-
+    depends_on:
+      - elasticsearch
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.6.1
+    image: docker.elastic.co/logstash/logstash:6.6.2
     ports:
       #- "5000:5000"
       #- "5000:5000/udp"
@@ -73,6 +79,8 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
       - source: logstash_elasticsearch-template.json
         target: /opt/logstash/elasticsearch-template.json
+    depends_on:
+      - elasticsearch
       #- source: logstash_winad
       #  target: /usr/share/logstash/pipeline/winad.conf
       ###fim original
@@ -88,7 +96,7 @@ services:
         target: /etc/logstash/conf.d/patterns/pfsense.grok
         
     environment:
-      LS_JAVA_OPTS: "-Xmx16g -Xms16g"
+      LS_JAVA_OPTS: "-Xmx6g -Xms6g"
     networks:
       - elk
     volumes:
@@ -98,7 +106,7 @@ services:
       replicas: 1
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.6.1
+    image: docker.elastic.co/kibana/kibana:6.6.2
     ports:
       - "5601:5601"
     configs:
@@ -111,6 +119,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - elasticsearch
 
 configs:
 ##elasticsearsh configs
