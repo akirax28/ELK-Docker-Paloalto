@@ -11,9 +11,11 @@ services:
       - source: elastic_config
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      cluster.routing.allocation.enable: all
-      cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
+      - node.name=es01
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.routing.allocation.enable: all
+      - cluster.name: docker-cluster
     networks:
       - elk
     deploy:
@@ -22,35 +24,85 @@ services:
     volumes:
       - /data/elk:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
   elasticsearch2:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     environment:
-      cluster.routing.allocation.enable: all
-      cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
-      discovery.zen.ping.unicast.hosts: elasticsearch
+      - node.name=es02
+      - cluster.routing.allocation.enable: all
+      - cluster.name: docker-cluster
+      - ES_JAVA_OPTS: "-Xmx6g -Xms6g"
+      - discovery.zen.ping.unicast.hosts: elasticsearch
+      - bootstrap.memory_lock=true
     networks:
       - elk
-#    volumes:
-#      - elastic_data02:/usr/share/elasticsearch/data
-#      - /etc/localtime:/etc/localtime
+    volumes:
+      - elastic_data02:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
-      
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
   elasticsearch3:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     environment:
-      cluster.routing.allocation.enable: all
-      cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
-      discovery.zen.ping.unicast.hosts: elasticsearch
+      - node.name=es03
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"    
+      - cluster.routing.allocation.enable: all
+      - discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
-#    volumes:
-#      - elastic_data03:/usr/share/elasticsearch/data
-#      - /etc/localtime:/etc/localtime
+    volumes:
+      - elastic_data03:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s      
       
   elasticsearch4:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
@@ -125,6 +177,20 @@ services:
       replicas: 1
     depends_on:
       - elasticsearch
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s      
 
 configs:
 ##elasticsearsh configs
@@ -153,10 +219,10 @@ configs:
   kibana_config:
     file: ./kibana/config/kibana.yml
     
-#volumes:
-#  elastic_data02:
-#  elastic_data03:
-#  elastic_data04:
+volumes:
+  elastic_data02:
+  elastic_data03:
+  elastic_data04:
 networks:
   elk:
     driver: overlay
