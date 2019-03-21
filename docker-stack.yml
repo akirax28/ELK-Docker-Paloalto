@@ -111,7 +111,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     container_name: elasticsearch4
     environment:
-      - node.name:es04
+      - node.name: es04
       - bootstrap.memory_lock: true
       - cluster.routing.allocation.enable: all
       - cluster.name: docker-cluster
