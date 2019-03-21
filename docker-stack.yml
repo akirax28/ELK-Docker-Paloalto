@@ -8,9 +8,9 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    configs:
-      - source: elastic_config
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
+#    configs:
+#      - source: elastic_config
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       - node.name=es01
 #      - bootstrap.memory_lock=true
