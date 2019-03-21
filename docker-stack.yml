@@ -46,7 +46,7 @@ services:
     container_name: elasticsearch2
     environment:
       - node.name=es02
-      - cluster.routing.allocation.enable=all
+      - bootstrap.memory_lock=true
       - cluster.name=docker-cluster
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
@@ -112,7 +112,6 @@ services:
     environment:
       - node.name=es04
       - bootstrap.memory_lock=true
-      - cluster.routing.allocation.enable: all
       - cluster.name: docker-cluster
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
