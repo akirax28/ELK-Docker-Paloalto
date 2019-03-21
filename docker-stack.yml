@@ -13,7 +13,7 @@ services:
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       - node.name=es01
-      - bootstrap.memory_lock=true
+#      - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 #      - cluster.routing.allocation.enable: all
       - cluster.name=docker-cluster
