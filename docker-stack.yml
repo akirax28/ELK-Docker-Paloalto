@@ -4,6 +4,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -42,11 +43,12 @@ services:
 
   elasticsearch2:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: elasticsearch2
     environment:
       - node.name=es02
       - cluster.routing.allocation.enable: all
       - cluster.name: docker-cluster
-      - ES_JAVA_OPTS: "-Xmx6g -Xms6g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.zen.ping.unicast.hosts: elasticsearch
       - bootstrap.memory_lock=true
     networks:
@@ -74,6 +76,7 @@ services:
 
   elasticsearch3:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: elasticsearch3
     environment:
       - node.name=es03
       - cluster.name=docker-cluster
@@ -106,11 +109,14 @@ services:
       
   elasticsearch4:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: elasticsearch4
     environment:
-      cluster.routing.allocation.enable: all
-      cluster.name: docker-cluster
-      ES_JAVA_OPTS: "-Xmx6g -Xms6g"
-      discovery.zen.ping.unicast.hosts: elasticsearch
+      - node.name=es04
+      - bootstrap.memory_lock=true
+      - cluster.routing.allocation.enable: all
+      - cluster.name: docker-cluster
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.zen.ping.unicast.hosts: elasticsearch
     networks:
       - elk
 #    volumes:
