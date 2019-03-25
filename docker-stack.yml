@@ -14,10 +14,12 @@ services:
     environment:
       - node.name=es01
 #     - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
 #     - cluster.routing.allocation.enable: all
       - cluster.name=docker-cluster
       - discovery.zen.minimum_master_nodes=1
+      ######node tipe####
+      - "node.master=true"
     networks:
       - elk
     deploy:
@@ -49,7 +51,7 @@ services:
       - node.name=es02
 #      - bootstrap.memory_lock=true
       - cluster.name=docker-cluster
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
     networks:
       - elk
@@ -81,7 +83,7 @@ services:
       - node.name=es03
       - cluster.name=docker-cluster
 #      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"    
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
     networks:
       - elk
@@ -113,7 +115,7 @@ services:
       - node.name=es04
       - cluster.name=docker-cluster
  #     - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"    
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
     networks:
       - elk
@@ -171,7 +173,7 @@ services:
       - elasticsearch
         
     environment:
-      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      LS_JAVA_OPTS: "-Xmx2g -Xms2g"
     networks:
       - elk
     volumes:
