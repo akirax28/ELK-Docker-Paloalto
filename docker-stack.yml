@@ -142,8 +142,8 @@ services:
     ports:
       #- "5000:5000"
       #- "5000:5000/udp"
-      - "514:514/udp"
-      - "514:514"
+      - "514:5000/udp"
+      - "514:5000"
       - "9600:9600"
     configs:
       #ogirinal
@@ -164,13 +164,13 @@ services:
       #  target: /etc/logstash/conf.d/10.syslog.conf
       #- source: 30-outputs.conf
       #  target: /etc/logstash/conf.d/30-outputs.conf
-      - source: pfsense.grok
-        target: /etc/logstash/conf.d/patterns/pfsense.grok
+      #- source: pfsense.grok
+      #  target: /etc/logstash/conf.d/patterns/pfsense.grok
     depends_on:
       - elasticsearch
         
     environment:
-      LS_JAVA_OPTS: "-Xmx6g -Xms6g"
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
     networks:
       - elk
     volumes:
