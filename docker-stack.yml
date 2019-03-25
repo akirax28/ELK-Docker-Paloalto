@@ -20,6 +20,9 @@ services:
       - discovery.zen.minimum_master_nodes=1
       ######node tipe####
       - "node.master=true"
+      - "node.data=false"
+      - "node.ingest=false"
+      - "cluster.remote.connect=false"
     networks:
       - elk
     deploy:
@@ -53,6 +56,11 @@ services:
       - cluster.name=docker-cluster
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      ######node tipe####
+      - "node.master=false"
+      - "node.data=false"
+      - "node.ingest=true"
+      - "cluster.remote.connect=false"
     networks:
       - elk
     volumes:
@@ -85,6 +93,11 @@ services:
 #      - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      ######node tipe####
+      - "node.master=false"
+      - "node.data=false"
+      - "node.ingest=true"
+      - "cluster.remote.connect=false"     
     networks:
       - elk
     volumes:
@@ -117,6 +130,11 @@ services:
  #     - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      ######node tipe####
+      - "node.master=true"
+      - "node.data=false"
+      - "node.ingest=false"
+      - "cluster.remote.connect=false"        
     networks:
       - elk
     volumes:
@@ -139,6 +157,51 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s         
+
+  elasticsearch5:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: elasticsearch5
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+#    configs:
+#      - source: elastic_config
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - node.name=es05
+#     - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+#     - cluster.routing.allocation.enable: all
+      - cluster.name=docker-cluster
+      - discovery.zen.minimum_master_nodes=1
+      ######node tipe####
+      - "node.master=false"
+      - "node.data=true"
+      - "node.ingest=false"
+      - "cluster.remote.connect=false"
+    networks:
+      - elk
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - /data/elk:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
 
   logstash:
     image: docker.elastic.co/logstash/logstash:6.6.2
