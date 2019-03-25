@@ -57,10 +57,10 @@ services:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
-      - "node.master=false"
+#      - "node.master=false"
       - "node.data=false"
-      - "node.ingest=false"
-      - "cluster.remote.connect=false"
+#      - "node.ingest=false"
+#      - "cluster.remote.connect=false"
     networks:
       - elk
     volumes:
@@ -94,10 +94,10 @@ services:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
-      - "node.master=false"
+#      - "node.master=false"
       - "node.data=false"
-      - "node.ingest=true"
-      - "cluster.remote.connect=false"     
+#      - "node.ingest=true"
+#      - "cluster.remote.connect=false"     
     networks:
       - elk
     volumes:
@@ -134,7 +134,7 @@ services:
       - "node.master=true"
       - "node.data=false"
       - "node.ingest=false"
-      - "cluster.remote.connect=false"        
+#      - "cluster.remote.connect=false"        
     networks:
       - elk
     volumes:
@@ -170,7 +170,7 @@ services:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
 #     - cluster.routing.allocation.enable: all
       - cluster.name=docker-cluster
-      - discovery.zen.minimum_master_nodes=1
+#      - discovery.zen.minimum_master_nodes=1
       ######node tipe####
       - "node.master=false"
       - "node.data=true"
