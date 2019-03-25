@@ -57,7 +57,7 @@ services:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
-      - "node.master=false"
+      - "node.master=true"
 #      - "node.data=false"
 #      - "node.ingest=true"
 #      - "cluster.remote.connect=false"
