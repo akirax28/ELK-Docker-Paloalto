@@ -20,8 +20,8 @@ services:
       - discovery.zen.minimum_master_nodes=1
       ######node tipe####
       - "node.master=true"
-#      - "node.data=false"
-#      - "node.ingest=false"
+      - "node.data=true"
+      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
     networks:
       - elk
@@ -50,30 +50,24 @@ services:
   elasticsearch02:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     container_name: elasticsearch02
-#    configs:
-#      - source: elastic_config
-#        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       - node.name=es02
-#     - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
-#     - cluster.routing.allocation.enable: all
       - cluster.name=docker-cluster
-#      - discovery.zen.minimum_master_nodes=1
+ #     - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
       - "node.master=false"
       - "node.data=false"
-#      - "node.ingest=false"
+      - "node.ingest=true"
 #      - "cluster.remote.connect=false"
-
     networks:
       - elk
-    deploy:
-      mode: replicated
-      replicas: 1
     volumes:
-#      - /data/elk:/usr/share/elasticsearch/data
+      - elastic_data02:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
+    depends_on:
+      - elasticsearch
     ulimits:
       nproc: 65535
       memlock:
@@ -88,7 +82,8 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
-        window: 120s
+        window: 120s         
+
 
   elasticsearch03:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
@@ -107,7 +102,7 @@ services:
     networks:
       - elk
     volumes:
-#      - elastic_data04:/usr/share/elasticsearch/data
+      - elastic_data03:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
@@ -144,7 +139,7 @@ services:
     networks:
       - elk
     volumes:
-#      - elastic_data02:/usr/share/elasticsearch/data
+      - elastic_data04:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
@@ -181,7 +176,7 @@ services:
     networks:
       - elk
     volumes:
- #     - elastic_data03:/usr/share/elasticsearch/data
+      - elastic_data05:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
@@ -305,6 +300,7 @@ volumes:
   elastic_data02:
   elastic_data03:
   elastic_data04:
+  elastic_data05:
 networks:
   elk:
     driver: overlay
