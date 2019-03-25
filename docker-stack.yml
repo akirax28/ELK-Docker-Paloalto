@@ -5,7 +5,9 @@ services:
   elasticsearch_master:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     container_name: elasticsearch_maste01
-
+    ports:
+      - "9200:9200"
+      - "9300:9300"
 #    configs:
 #      - source: elastic_config
 #        target: /usr/share/elasticsearch/config/elasticsearch.yml
@@ -19,7 +21,7 @@ services:
       ######node tipe####
       - "node.master=true"
       - "node.data=false"
-      - "node.ingest=false"
+#      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
     networks:
       - elk
@@ -61,7 +63,7 @@ services:
       ######node tipe####
       - "node.master=true"
       - "node.data=false"
-      - "node.ingest=false"
+#      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
     networks:
       - elk
@@ -99,7 +101,7 @@ services:
       ######node tipe####
       - "node.master=true"
       - "node.data=false"
-      - "node.ingest=false"
+#      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
     networks:
       - elk
@@ -127,9 +129,6 @@ services:
   elasticsearch_coord01:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     container_name: elasticsearch_cord01
-    ports:
-      - "9200:9200"
-      - "9300:9300"
     environment:
       - node.name=escord01
 #      - bootstrap.memory_lock=true
