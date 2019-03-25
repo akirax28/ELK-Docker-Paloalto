@@ -89,7 +89,7 @@ elasticsearch_master02:
         max_attempts: 3
         window: 120s
 
-  elasticsearch_master03:
+  elasticsearchmaster03:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     container_name: elasticsearch_master03
     environment:
