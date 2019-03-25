@@ -22,7 +22,7 @@ services:
       - "node.master=true"
       - "node.data=false"
       - "node.ingest=false"
-      - "cluster.remote.connect=false"
+#      - "cluster.remote.connect=false"
     networks:
       - elk
     deploy:
