@@ -21,7 +21,7 @@ services:
       ######node tipe####
       - "node.master=true"
       - "node.data=true"
-      - "node.ingest=false"
+#      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
     networks:
       - elk
@@ -59,7 +59,7 @@ services:
       ######node tipe####
       - "node.master=false"
       - "node.data=false"
-      - "node.ingest=true"
+#      - "node.ingest=true"
 #      - "cluster.remote.connect=false"
     networks:
       - elk
