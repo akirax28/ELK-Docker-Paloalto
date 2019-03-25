@@ -96,7 +96,7 @@ elasticsearch_master02:
       - node.name=esma03
       - cluster.name=docker-cluster
  #     - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
       - "node.master=true"
