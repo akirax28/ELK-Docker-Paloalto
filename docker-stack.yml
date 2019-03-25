@@ -61,7 +61,7 @@ services:
       - cluster.name=docker-cluster
 #      - discovery.zen.minimum_master_nodes=1
       ######node tipe####
-#      - "node.master=true"
+      - "node.master=false"
       - "node.data=false"
 #      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
@@ -100,7 +100,7 @@ services:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
-#      - "node.master=true"
+      - "node.master=false"
       - "node.data=false"
 #      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
@@ -137,7 +137,7 @@ services:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
-#      - "node.master=false"
+      - "node.master=false"
       - "node.data=false"
 #      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
@@ -174,7 +174,7 @@ services:
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
-#      - "node.master=false"
+      - "node.master=false"
       - "node.data=false"
 #      - "node.ingest=true"
 #      - "cluster.remote.connect=false"     
