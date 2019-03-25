@@ -47,7 +47,7 @@ services:
         max_attempts: 3
         window: 120s
 
-elasticsearch_master02:
+  elasticsearch_master02:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     container_name: elasticsearch_master02
 #    configs:
@@ -89,7 +89,7 @@ elasticsearch_master02:
         max_attempts: 3
         window: 120s
 
-  elasticsearchmaster03:
+  elasticsearch_master03:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     container_name: elasticsearch_master03
     environment:
@@ -102,7 +102,7 @@ elasticsearch_master02:
       - "node.master=true"
       - "node.data=false"
       - "node.ingest=false"
-#      - "cluster.remote.connect=false"        
+#      - "cluster.remote.connect=false"
     networks:
       - elk
     volumes:
