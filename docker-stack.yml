@@ -2,9 +2,9 @@ version: '3.7'
 
 services:
 
-  elasticsearch:
+  elasticsearch_master:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
-    container_name: elasticsearch
+    container_name: elasticsearch_maste01
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -12,12 +12,12 @@ services:
 #      - source: elastic_config
 #        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      - node.name=es01
+      - node.name=esma01
 #     - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
 #     - cluster.routing.allocation.enable: all
       - cluster.name=docker-cluster
-      - discovery.zen.minimum_master_nodes=2
+      - discovery.zen.minimum_master_nodes=3
       ######node tipe####
       - "node.master=true"
       - "node.data=false"
@@ -47,27 +47,32 @@ services:
         max_attempts: 3
         window: 120s
 
-  elasticsearch2:
+elasticsearch_master02:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
-    container_name: elasticsearch2
+    container_name: elasticsearch_master02
+#    configs:
+#      - source: elastic_config
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      - node.name=es02
-#      - bootstrap.memory_lock=true
-      - cluster.name=docker-cluster
+      - node.name=esma02
+#     - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+#     - cluster.routing.allocation.enable: all
+      - cluster.name=docker-cluster
+      - discovery.zen.minimum_master_nodes=3
       ######node tipe####
-#      - "node.master=false"
+      - "node.master=true"
       - "node.data=false"
-#      - "node.ingest=false"
-#      - "cluster.remote.connect=false"
+      - "node.ingest=false"
+      - "cluster.remote.connect=false"
     networks:
       - elk
+    deploy:
+      mode: replicated
+      replicas: 1
     volumes:
-      - elastic_data02:/usr/share/elasticsearch/data
+#      - /data/elk:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
-    depends_on:
-      - elasticsearch
     ulimits:
       nproc: 65535
       memlock:
@@ -84,48 +89,11 @@ services:
         max_attempts: 3
         window: 120s
 
-  elasticsearch3:
+  elasticsearch_master03:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
-    container_name: elasticsearch3
+    container_name: elasticsearch_master03
     environment:
-      - node.name=es03
-      - cluster.name=docker-cluster
-#      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
-      ######node tipe####
-#      - "node.master=false"
-      - "node.data=false"
-#      - "node.ingest=true"
-#      - "cluster.remote.connect=false"     
-    networks:
-      - elk
-    volumes:
-      - elastic_data03:/usr/share/elasticsearch/data
-      - /etc/localtime:/etc/localtime
-    depends_on:
-      - elasticsearch
-    ulimits:
-      nproc: 65535
-      memlock:
-        soft: -1
-        hard: -1
-    cap_add:
-      - ALL
-    privileged: true
-    deploy:
-      mode: global
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s      
-      
-  elasticsearch4:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
-    container_name: elasticsearch4
-    environment:
-      - node.name=es04
+      - node.name=esma03
       - cluster.name=docker-cluster
  #     - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
@@ -158,14 +126,88 @@ services:
         max_attempts: 3
         window: 120s         
 
-  elasticsearch5:
+  elasticsearch_coord01:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
-    container_name: elasticsearch5
+    container_name: elasticsearch_cord01
+    environment:
+      - node.name=escord01
+#      - bootstrap.memory_lock=true
+      - cluster.name=docker-cluster
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      ######node tipe####
+      - "node.master=false"
+      - "node.data=false"
+      - "node.ingest=false"
+      - "cluster.remote.connect=false"
+    networks:
+      - elk
+    volumes:
+      - elastic_data02:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
+    depends_on:
+      - elasticsearch
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  elasticsearch_ingest01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: elasticsearch_ingest01
+    environment:
+      - node.name=esin01
+      - cluster.name=docker-cluster
+#      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"    
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      ######node tipe####
+#      - "node.master=false"
+      - "node.data=false"
+#      - "node.ingest=true"
+#      - "cluster.remote.connect=false"     
+    networks:
+      - elk
+    volumes:
+      - elastic_data03:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime
+    depends_on:
+      - elasticsearch
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s      
+
+  elasticsearch_data01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: elasticsearch_data01
 #    configs:
 #      - source: elastic_config
 #        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      - node.name=es05
+      - node.name=esdata01
 #     - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
 #     - cluster.routing.allocation.enable: all
