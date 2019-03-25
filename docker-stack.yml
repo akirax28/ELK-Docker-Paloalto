@@ -58,7 +58,7 @@ services:
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
       - "node.master=false"
-      - "node.data=false"
+#      - "node.data=false"
 #      - "node.ingest=true"
 #      - "cluster.remote.connect=false"
     networks:
@@ -96,7 +96,7 @@ services:
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
       - "node.master=false"
-      - "node.data=false"
+#      - "node.data=false"
 #      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
     networks:
@@ -133,7 +133,7 @@ services:
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
       ######node tipe####
       - "node.master=false"
-      - "node.data=false"
+#      - "node.data=false"
 #      - "node.ingest=false"
 #      - "cluster.remote.connect=false"
     networks:
