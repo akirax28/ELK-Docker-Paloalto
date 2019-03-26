@@ -64,7 +64,8 @@ services:
     networks:
       - elk
     volumes:
-      - elastic_data02:/usr/share/elasticsearch/data
+      - /data/elk:/usr/share/elasticsearch/data    
+      #- elastic_data02:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
@@ -102,7 +103,8 @@ services:
     networks:
       - elk
     volumes:
-      - elastic_data03:/usr/share/elasticsearch/data
+      - /data/elk:/usr/share/elasticsearch/data      
+      #- elastic_data03:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
@@ -139,7 +141,8 @@ services:
     networks:
       - elk
     volumes:
-      - elastic_data04:/usr/share/elasticsearch/data
+      - /data/elk:/usr/share/elasticsearch/data      
+      #- elastic_data04:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
@@ -176,7 +179,8 @@ services:
     networks:
       - elk
     volumes:
-      - elastic_data05:/usr/share/elasticsearch/data
+      - /data/elk:/usr/share/elasticsearch/data      
+      #- elastic_data05:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
     depends_on:
       - elasticsearch
