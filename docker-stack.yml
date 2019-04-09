@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -48,7 +48,7 @@ services:
         window: 120s
 
   elasticsearch02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
     container_name: elasticsearch02
     environment:
       - node.name=es02
@@ -86,7 +86,7 @@ services:
 
 
   elasticsearch03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
     container_name: elasticsearch03
     environment:
       - node.name=es03
@@ -123,7 +123,7 @@ services:
         window: 120s         
 
   elasticsearch04:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
     container_name: elasticsearch04
     environment:
       - node.name=es04
@@ -160,7 +160,7 @@ services:
         window: 120s
 
   elasticsearch05:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
     container_name: elasticsearch05
     environment:
       - node.name=es05
@@ -197,7 +197,7 @@ services:
         window: 120s      
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.6.2
+    image: docker.elastic.co/logstash/logstash:6.7.1
     ports:
       #- "5000:5000"
       #- "5000:5000/udp"
@@ -239,7 +239,7 @@ services:
       replicas: 1
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.6.2
+    image: docker.elastic.co/kibana/kibana:6.7.1
     ports:
       - "5601:5601"
     configs:
