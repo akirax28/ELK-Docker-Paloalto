@@ -25,9 +25,6 @@ services:
 #      - "cluster.remote.connect=false"
     networks:
       - elk
-    deploy:
-      mode: replicated
-      replicas: 1
     volumes:
       - /data/elk:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
@@ -40,6 +37,8 @@ services:
       - ALL
     privileged: true
     deploy:
+      mode: replicated
+      replicas: 1
       mode: global
       restart_policy:
         condition: on-failure
