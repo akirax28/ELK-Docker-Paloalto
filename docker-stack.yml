@@ -39,7 +39,6 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-      mode: global
       restart_policy:
         condition: on-failure
         delay: 5s
