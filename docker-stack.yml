@@ -15,7 +15,7 @@ services:
       - discovery.zen.minimum_master_nodes=1
 ######node tipe####
       #- "node.master=false"
-      - "node.data=false"
+      #- "node.data=false"
       - "node.ingest=false"
       #- "cluster.remote.connect=false"
     ulimits:
@@ -76,35 +76,12 @@ services:
       #- "discovery.zen.ping.unicast.hosts=elasticsearch"
 ######node tipe####
       - "node.master=false"
-      #- "node.data=false"
-      #- "node.ingest=true"
+      - "node.data=false"
+      - "node.ingest=true"
       #- "cluster.remote.connect=false"
     volumes:
       - elastic_data02:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 800M
-
-  elasticsearch4:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
-    environment:
-      - node.name=elasticsearch4
-      - cluster.initial_master_nodes=elasticsearch
-      - cluster.name=docker-cluster
-      - discovery.seed_hosts=elasticsearch
-      - "ES_JAVA_OPTS=-Xmx512m -Xms512m"
-      #- bootstrap.memory_lock=true
-      #- "discovery.zen.ping.unicast.hosts=elasticsearch"
-######node tipe####
-      - "node.master=false"
-      - "node.data=false"
-      #- "node.ingest=true"
-      #- "cluster.remote.connect=false"
     deploy:
       mode: replicated
       replicas: 1
