@@ -125,8 +125,8 @@ services:
       #ogirinal
       - source: logstash_config
         target: /usr/share/logstash/config/logstash.yml
-      - source: logstash_pipeline
-        target: /usr/share/logstash/pipeline/logstash.conf
+      #- source: logstash_pipeline
+      #  target: /usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
     environment:
