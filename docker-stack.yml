@@ -11,7 +11,7 @@ services:
       - node.name=elasticsearch
       - cluster.name=docker-cluster
       - cluster.initial_master_nodes=elasticsearch
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - discovery.zen.minimum_master_nodes=1
 ######node tipe####
       #- "node.master=false"
@@ -30,7 +30,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 800M
+          memory: 4g
     volumes:
       #- elastic_data01:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
@@ -40,17 +40,13 @@ services:
       - node.name=elasticsearch2
       - cluster.initial_master_nodes=elasticsearch
       - cluster.name=docker-cluster
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - discovery.seed_hosts=elasticsearch
 ######node tipe####
       - "node.master=false"
       #- "node.data=false"
       - "node.ingest=false"
       #- "cluster.remote.connect=false"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     networks:
       - elk
     volumes:
@@ -62,7 +58,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 800M
+          memory: 4g
 
   elasticsearch3:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
@@ -71,7 +67,7 @@ services:
       - cluster.initial_master_nodes=elasticsearch
       - cluster.name=docker-cluster
       - discovery.seed_hosts=elasticsearch
-      - "ES_JAVA_OPTS=-Xmx512m -Xms512m"
+      - "ES_JAVA_OPTS=-Xmx2g -Xms2g"
       #- bootstrap.memory_lock=true
       #- "discovery.zen.ping.unicast.hosts=elasticsearch"
 ######node tipe####
@@ -88,7 +84,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 800M
+          memory: 4g
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.0.1
@@ -107,7 +103,7 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      LS_JAVA_OPTS: "-Xmx2g -Xms2g"
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
     networks:
       - elk
     volumes:
