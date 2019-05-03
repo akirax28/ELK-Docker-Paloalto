@@ -30,7 +30,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 1G
+          memory: 800M
     volumes:
       #- elastic_data01:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
@@ -62,7 +62,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 512M
+          memory: 800M
 
   elasticsearch3:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
@@ -88,7 +88,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 512M
+          memory: 800M
 
   elasticsearch4:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
@@ -111,7 +111,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 1G
+          memory: 800M
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.0.1
@@ -138,6 +138,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 800M
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.0.1
@@ -158,7 +162,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 1G 
+          memory: 512M 
 
 configs:
 ##elasticsearsh configs
