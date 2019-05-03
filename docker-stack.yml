@@ -118,15 +118,15 @@ services:
     ports:
       #- "5000:5000"
       #- "5000:5000/udp"
-      - "514:5044/udp"
-      - "514:5044"
+      - "514:5144/udp"
+      - "514:5144"
       - "9600:9600"
     configs:
       #ogirinal
-      - source: logstash_config
-        target: /usr/share/logstash/config/logstash.yml
-      #- source: logstash_pipeline
-      #  target: /usr/share/logstash/pipeline/logstash.conf
+      #- source: logstash_config
+      #  target: /usr/share/logstash/config/logstash.yml
+      - source: logstash_pipeline
+        target: /usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
     environment:
