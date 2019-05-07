@@ -13,6 +13,7 @@ services:
       - cluster.name=docker-cluster
       - cluster.initial_master_nodes=elasticsearch
       - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - ilm_enabled=true
       - discovery.zen.minimum_master_nodes=1
 ######node tipe####
       #- "node.master=false"
@@ -42,6 +43,7 @@ services:
       - cluster.initial_master_nodes=elasticsearch
       - cluster.name=docker-cluster
       - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - ilm_enabled=true
       - discovery.seed_hosts=elasticsearch
 ######node tipe####
       - "node.master=false"
