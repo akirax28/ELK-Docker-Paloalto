@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
     #container_name: elasticsearch
     ports:
       - "9200:9200"
@@ -37,7 +37,7 @@ services:
       - elastic_data01:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
   elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
     environment:
       - node.name=elasticsearch2
       - cluster.initial_master_nodes=elasticsearch
@@ -68,7 +68,7 @@ services:
           memory: 512M
 
   elasticsearch3:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
     environment:
       - node.name=elasticsearch3
       - cluster.initial_master_nodes=elasticsearch
@@ -100,7 +100,7 @@ services:
           memory: 512M
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.0.1
+    image: docker.elastic.co/logstash/logstash:7.1.0
     ports:
       - "514:5144/udp"
       - "9600:9600"
@@ -124,7 +124,7 @@ services:
           cpus: '0.50'
           memory: 512M
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.0.1
+    image: docker.elastic.co/kibana/kibana:7.1.0
     depends_on:
       - elasticsearch
     ports:
