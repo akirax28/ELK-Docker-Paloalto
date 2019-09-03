@@ -8,6 +8,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
+      - xpack.ml.enabled=false 
       - node.attr.box_type=hot
       - ilm_enabled=true
       - node.name=elasticsearch
@@ -39,6 +40,7 @@ services:
   elasticsearch2:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
     environment:
+      - xpack.ml.enabled=false 
       - node.attr.box_type=warm
       - ilm_enabled=true    
       - node.name=elasticsearch2
@@ -71,6 +73,7 @@ services:
   elasticsearch3:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
     environment:
+      - xpack.ml.enabled=false 
       - node.attr.box_type=cold
       - ilm_enabled=true
       - node.name=elasticsearch3
