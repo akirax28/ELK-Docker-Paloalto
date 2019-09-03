@@ -171,4 +171,4 @@ volumes:
 
 networks:
   elk:
-    driver: bridge
+    #driver: overlay
