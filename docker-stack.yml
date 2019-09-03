@@ -18,7 +18,7 @@ services:
 ######node tipe####
       #- "node.master=false"
       #- "node.data=false"
-      - "node.ingest=false"
+      #- "node.ingest=false"
       #- "cluster.remote.connect=false"
     ulimits:
       memlock:
@@ -46,9 +46,9 @@ services:
       - ilm_enabled=true
       - discovery.seed_hosts=elasticsearch
 ######node tipe####
-      - "node.master=false"
+      #- "node.master=false"
       #- "node.data=false"
-      - "node.ingest=false"
+      #- "node.ingest=false"
       #- "cluster.remote.connect=false"
     ulimits:
       memlock:
@@ -78,8 +78,8 @@ services:
       #- bootstrap.memory_lock=true
       #- "discovery.zen.ping.unicast.hosts=elasticsearch"
 ######node tipe####
-      - "node.master=false"
-      - "node.data=false"
+      #- "node.master=false"
+      #- "node.data=false"
       #- "node.ingest=true"
       #- "cluster.remote.connect=false"
     ulimits:
