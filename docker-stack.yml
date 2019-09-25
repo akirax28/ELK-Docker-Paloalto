@@ -1,20 +1,19 @@
 version: '3.7'
 
-services:
-
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
-      - xpack.ml.enabled=false 
       - node.attr.box_type=hot
       - ilm_enabled=true
+      - xpack.ml.enabled=false
+      - cluster.routing.allocation.enable=all
       - node.name=elasticsearch
       - cluster.name=docker-cluster
       - cluster.initial_master_nodes=elasticsearch
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
       - discovery.zen.minimum_master_nodes=1
 ######node tipe####
       #- "node.master=false"
@@ -32,22 +31,24 @@ services:
       replicas: 1
       resources:
         limits:
-          cpus: '0.80'
-          memory: 2g
+          cpus: '1.50'
+          memory: 512M
     volumes:
       - elastic_data01:/usr/share/elasticsearch/data
       - /etc/localtime:/etc/localtime
+      
   elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
     environment:
-      - xpack.ml.enabled=false 
       - node.attr.box_type=warm
-      - ilm_enabled=true    
+      - ilm_enabled=true
+      - cluster.routing.allocation.enable=all
+      - discovery.seed_hosts=elasticsearch
       - node.name=elasticsearch2
+      - xpack.ml.enabled=false    
       - cluster.initial_master_nodes=elasticsearch
       - cluster.name=docker-cluster
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - discovery.seed_hosts=elasticsearch
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
 ######node tipe####
       #- "node.master=false"
       #- "node.data=false"
@@ -67,20 +68,21 @@ services:
       replicas: 1
       resources:
         limits:
-          cpus: '0.80'
-          memory: 2g
+          cpus: '1.50'
+          memory: 512M
 
   elasticsearch3:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
     environment:
-      - xpack.ml.enabled=false 
       - node.attr.box_type=cold
       - ilm_enabled=true
+      - cluster.routing.allocation.enable=all
       - node.name=elasticsearch3
+      - xpack.ml.enabled=false    
       - cluster.initial_master_nodes=elasticsearch
       - cluster.name=docker-cluster
       - discovery.seed_hosts=elasticsearch
-      - "ES_JAVA_OPTS=-Xmx2g -Xms2g"
+      - "ES_JAVA_OPTS=-Xmx256m -Xms256m"
       #- bootstrap.memory_lock=true
       #- "discovery.zen.ping.unicast.hosts=elasticsearch"
 ######node tipe####
@@ -103,10 +105,10 @@ services:
       resources:
         limits:
           cpus: '1.50'
-          memory: 3g
+          memory: 512M
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.3.1
+    image: docker.elastic.co/logstash/logstash:7.3.2
     ports:
       - "514:5144/udp"
       - "9600:9600"
@@ -130,13 +132,14 @@ services:
           cpus: '0.50'
           memory: 800M
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.3.1
+    image: docker.elastic.co/kibana/kibana:7.3.2
     depends_on:
       - elasticsearch
     ports:
       - "5601:5601"
     volumes:
       - /etc/localtime:/etc/localtime
+      - kibana_data:/usr/share/kibana/config
     networks:
       - elk
     deploy:
@@ -165,6 +168,7 @@ configs:
     file: ./kibana/config/kibana.yml
     
 volumes:
+  kibana_data:
   elastic_data01:
   elastic_data02:
   elastic_data03:
