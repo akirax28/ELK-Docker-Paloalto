@@ -20,3 +20,11 @@ Em docker Swarm execute:
     $ docker stack deploy -c docker-stack.yml ELK
 ```
 ## 
+
+Após a instalação, adicione os arquivos .json ao elasticsearch:
+
+```sh     
+    $ 
+    $ 
+    $ 
+```
