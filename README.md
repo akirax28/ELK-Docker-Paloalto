@@ -19,12 +19,11 @@ Em docker Swarm execute:
     $ cd elk
     $ docker stack deploy -c docker-stack.yml ELK
 ```
-## 
-
 Após a instalação, adicione os arquivos .json ao elasticsearch:
 
 ```sh     
-    $ 
-    $ 
-    $ 
+    $ cd kibana
+    $ curl -XPUT http://<your-elasticsearch-server>:9200/_template/panos-traffic?pretty -H 'Content-Type: application/json' -d @traffic_template_mapping-v1.json
+    $ curl -XPUT http://<your-elasticsearch-server>:9200/_template/panos-threat?pretty -H 'Content-Type: application/json' -d @threat_template_mapping-v1.json
 ```
+
