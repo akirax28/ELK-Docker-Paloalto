@@ -7,7 +7,7 @@ O Kibana permite que os usuários visualizem dados com tabelas e gráficos no El
 
 ## Paloalto
 
-- No Firewall é configurado para enviar 4 tipos de logs (trafego, ameaça, config e system), mas você pode escolher não enviar um desses logs nas do paloalto;
+- No Firewall é configurado para enviar 4 tipos de logs (trafego, ameaça, config e system) para porta 514 do ip do seu logstash, mas você pode escolher não enviar um desses logs nas do paloalto;
 
 ## Característica
 
@@ -44,11 +44,9 @@ As APIs de gerenciamento de ciclo de vida do índice (ILM) permitem automatizar 
 
 Configuração
 
-No nosso te
+no console do kibana (<your-elasticsearch-server>:5601/app/kibana#/dev_tools/console?_g=(refreshInterval:(pause:!f,value:5000),time:(from:now-15m,to:now)), crie 4 templates que faz a ligação do seu index ao life cicle policy:
 
-no console do kibana (<your-elasticsearch-server>:5601/app/kibana#/dev_tools/console?_g=(refreshInterval:(pause:!f,value:5000),time:(from:now-15m,to:now)) execute:
-
-
+```
 PUT _template/ifrr_traffic_template
 {
   "index_patterns": ["ifrr-panos-trafic*"],       
@@ -96,5 +94,36 @@ PUT _template/ifrr_system_template
     "index.lifecycle.rollover_alias": "ifrr-panos-system"    
   }
 }
+```
 
+Agora Crie os index para receber os logs do logstash:
 
+```
+PUT /%3Cifrr-panos-trafic-%7Bnow%2Fd%7D-000001%3E 
+{
+  "aliases": {
+    "ifrr-panos-traffic": {}
+  }
+}
+
+PUT /%3Cifrr-panos-threat-%7Bnow%2Fd%7D-000001%3E 
+{
+  "aliases": {
+    "ifrr-panos-threat": {}
+  }
+}
+
+PUT /%3Cifrr-panos-config-%7Bnow%2Fd%7D-000001%3E 
+{
+  "aliases": {
+    "ifrr-panos-config": {}
+  }
+}
+
+PUT /%3Cifrr-panos-system-%7Bnow%2Fd%7D-000001%3E 
+{
+  "aliases": {
+    "ifrr-panos-system": {}
+  }
+}
+```
