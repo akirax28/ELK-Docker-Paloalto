@@ -5,6 +5,10 @@
 Então, o que é o ELK Stack? "ELK" é a sigla para três projetos de código aberto: Elasticsearch, Logstash e Kibana. O Elasticsearch é um mecanismo de pesquisa e análise. O Logstash é um pipeline de processamento de dados do lado do servidor que ingere dados de várias fontes simultaneamente, os transforma e os envia para um "stash" como o Elasticsearch.
 O Kibana permite que os usuários visualizem dados com tabelas e gráficos no Elasticsearch.
 
+## Paloalto
+
+- No Firewall é configurado para enviar 4 tipos de logs (trafego, ameaça, config e system), mas você pode escolher não enviar um desses logs nas do paloalto;
+
 ## Característica
 
 - O mecanismo de pesquisa de código aberto, distribuído, RESTful, baseado em JSON. Fácil de usar, escalável e flexível, ganhou hiper-popularidade entre os usuários e uma empresa formada em torno dele, você sabe, para pesquisa.
@@ -40,5 +44,57 @@ As APIs de gerenciamento de ciclo de vida do índice (ILM) permitem automatizar 
 
 Configuração
 
-no console do kibana (<your-elasticsearch-server>:5601/app/kibana#/dev_tools/console?_g=(refreshInterval:(pause:!f,value:5000),time:(from:now-15m,to:now)) crie um template 
+No nosso te
+
+no console do kibana (<your-elasticsearch-server>:5601/app/kibana#/dev_tools/console?_g=(refreshInterval:(pause:!f,value:5000),time:(from:now-15m,to:now)) execute:
+
+
+PUT _template/ifrr_traffic_template
+{
+  "index_patterns": ["ifrr-panos-trafic*"],       
+  "settings": {
+    "number_of_shards": 1,
+    "refresh_interval" : "60s",
+    "number_of_replicas": 1,
+    "index.lifecycle.name": "ifrr-traffic-policy",    
+    "index.lifecycle.rollover_alias": "ifrr-panos-traffic"    
+  }
+}
+
+PUT _template/ifrr_threat_template
+{
+  "index_patterns": ["ifrr-panos-threat*"],       
+  "settings": {
+    "number_of_shards": 1,
+    "refresh_interval" : "60s",
+    "number_of_replicas": 1,
+    "index.lifecycle.name": "ifrr-threat-policy",    
+    "index.lifecycle.rollover_alias": "ifrr-panos-threat"    
+  }
+}
+
+PUT _template/ifrr_config_template
+{
+  "index_patterns": ["ifrr-panos-config*"],       
+  "settings": {
+    "number_of_shards": 1,
+    "refresh_interval" : "60s",
+    "number_of_replicas": 1,
+    "index.lifecycle.name": "ifrr-config-policy",    
+    "index.lifecycle.rollover_alias": "ifrr-panos-config"    
+  }
+}
+
+PUT _template/ifrr_system_template
+{
+  "index_patterns": ["ifrr-panos-system*"],       
+  "settings": {
+    "number_of_shards": 1,
+    "refresh_interval" : "60s",
+    "number_of_replicas": 1,
+    "index.lifecycle.name": "ifrr-system-policy",    
+    "index.lifecycle.rollover_alias": "ifrr-panos-system"    
+  }
+}
+
 
