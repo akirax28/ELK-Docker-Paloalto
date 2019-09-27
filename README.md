@@ -127,3 +127,97 @@ PUT /%3Cifrr-panos-system-%7Bnow%2Fd%7D-000001%3E
   }
 }
 ```
+
+Criando os Lifecycle Policies, você pode configurar os rollover de acordo com suas necessidades:
+
+``` 
+PUT _ilm/policy/ifrr-traffic-policy
+{
+  "policy": {                       
+    "phases": {
+      "hot": {                      
+        "actions": {
+          "rollover": {             
+            "max_size": "1GB",
+            "max_age": "30d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "90d",           
+        "actions": {
+          "delete": {}              
+        }
+      }
+    }
+  }
+}
+
+PUT _ilm/policy/ifrr-threat-policy
+{
+  "policy": {                       
+    "phases": {
+      "hot": {                      
+        "actions": {
+          "rollover": {             
+            "max_size": "1GB",
+            "max_age": "30d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "90d",           
+        "actions": {
+          "delete": {}              
+        }
+      }
+    }
+  }
+}
+
+PUT _ilm/policy/ifrr-config-policy
+{
+  "policy": {                       
+    "phases": {
+      "hot": {                      
+        "actions": {
+          "rollover": {             
+            "max_size": "1GB",
+            "max_age": "30d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "90d",           
+        "actions": {
+          "delete": {}              
+        }
+      }
+    }
+  }
+}
+
+PUT _ilm/policy/ifrr-system-policy
+{
+  "policy": {                       
+    "phases": {
+      "hot": {                      
+        "actions": {
+          "rollover": {             
+            "max_size": "1GB",
+            "max_age": "30d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "90d",           
+        "actions": {
+          "delete": {}              
+        }
+      }
+    }
+  }
+}
+```
+
+As policies criadas podem ser alteradas ou criadas de forma gráfica no próprio kibana em Management > Index Lifecycle Polices, mas as configuração alteradas so passão a valer na próximo rollover.
