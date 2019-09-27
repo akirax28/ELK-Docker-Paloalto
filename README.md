@@ -28,8 +28,17 @@ Após a instalação, adicione os arquivos .json ao elasticsearch:
     $ curl -XPUT http://<your-elasticsearch-server>:9200/_template/panos-threat?pretty -H 'Content-Type: application/json' -d @threat_template_mapping-v1.json
 ```
 
-Agora acesse o kibana <your-elasticsearch-server>:5601/app/kibana#/management/kibana/objects?_g=(refreshInterval:(pause:!f,value:5000),time:(from:now-15m,to:now)) e importe os arquivos de objetos salvos (nesta ordem)
+Agora acesse o kibana <your-elasticsearch-server>:5601/app/kibana#/management/kibana/objects?_g=(refreshInterval:(pause:!f,value:5000),time:(from:now-15m,to:now)) e importe os arquivos de objetos salvos (nesta ordem):
 
 - searches-base.json
 - visualisations-base.json
 - dashboards-base.json
+
+## LifeCycle (Ciclo de vida)
+
+As APIs de gerenciamento de ciclo de vida do índice (ILM) permitem automatizar como você deseja gerenciar seus índices ao longo do tempo. Em vez de simplesmente executar ações de gerenciamento em seus índices em um cronograma definido, você pode basear as ações em outros fatores, como tamanho do fragmento e requisitos de desempenho.
+
+Configuração
+
+no console do kibana (<your-elasticsearch-server>:5601/app/kibana#/dev_tools/console?_g=(refreshInterval:(pause:!f,value:5000),time:(from:now-15m,to:now)) crie um template 
+
