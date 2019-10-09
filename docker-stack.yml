@@ -138,9 +138,6 @@ services:
       - elasticsearch
     ports:
       - "5601:5601"
-    environment:
-      - SERVER_NAME=kibana
-      - ELASTICSEARCH_HOSTS=elasticsearch
     volumes:
       - /etc/localtime:/etc/localtime
       - kibana_data:/usr/share/kibana/config
