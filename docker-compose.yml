@@ -1,3 +1,4 @@
+# vim: set relativenumber nonu shiftwidth=2 tabstop=2 softtabstop=-1 expandtab wrap:
 version: '3.7'
 
 services:
@@ -7,14 +8,14 @@ services:
       - node.attr.box_type=hot
       - node.attr.size=hot
       - ilm_enabled=true
-      - bootstrap.memory_lock=true
+#      - bootstrap.memory_lock=true
       - node.name=elasticsearch-hot
       - cluster.name=docker-cluster
       - cluster.initial_master_nodes=elasticsearch-hot,elasticsearsh-warm,elasticsearch-cold
       - discovery.seed_hosts=elasticsearsh-warm,elasticsearch-cold
       - xpack.monitoring.collection.enabled=true
       - path.repo=/usr/share/elasticsearch/backup
-      - "ES_JAVA_OPTS=Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms800m -Xmx800m"
     networks:
       - elk
     deploy:
@@ -23,7 +24,7 @@ services:
           cpus: '2.0'
           memory: 512M
     volumes:
-      - elastic-hot_:/usr/share/elasticsearch/hot
+      - elastic_hot:/usr/share/elasticsearch/data
       - elastic_backup:/usr/share/elasticsearch/backup
       - /etc/localtime:/etc/localtime
 
@@ -33,18 +34,18 @@ services:
       - node.attr.box_type=warm
       - node.attr.size=warm
       - ilm_enabled=true
-      - bootstrap.memory_lock=true
+#      - bootstrap.memory_lock=true
       - node.name=elasticsearch-warm
       - cluster.name=docker-cluster
       - cluster.initial_master_nodes=elasticsearch-hot,elasticsearch-cold,elasticsearch-warm
       - discovery.seed_hosts=elasticsearch-hot,elasticsearch-cold
       - xpack.monitoring.collection.enabled=true
       - path.repo=/usr/share/elasticsearch/backup
-      - "ES_JAVA_OPTS=-Xmx512m -Xms512m"
+      - "ES_JAVA_OPTS=-Xmx800m -Xms800m"
     networks:
       - elk
     volumes:
-      - elastic_warm_data:/usr/share/elasticsearch/data
+      - elastic_warm:/usr/share/elasticsearch/data
       - elastic_backup:/usr/share/elasticsearch/backup
       - /etc/localtime:/etc/localtime
     deploy:
@@ -61,20 +62,20 @@ services:
       - node.attr.box_type=cold
       - node.attr.size=warm
       - ilm_enabled=true
-      - cluster.routing.allocation.enable=all
-      - bootstrap.memory_lock=true
+#      - cluster.routing.allocation.enable=all
+#      - bootstrap.memory_lock=true
       - node.name=elasticsearch-cold
-      - xpack.ml.enabled=false    
       - cluster.initial_master_nodes=elasticsearch
       - cluster.name=docker-cluster
-      - cluster.initial_master_nodes=elasticsearch,elasticsearch2
-      - discovery.seed_hosts=elasticsearch,elasticsearch2,elasticsearsh-warm,elasticsearch-cold
+      - cluster.initial_master_nodes=elasticsearch-hot,elasticsearch-cold,elasticsearch-warm
+      - discovery.seed_hosts=elasticsearch-hot,elasticsearch-cold
       - xpack.monitoring.collection.enabled=true
-      - "ES_JAVA_OPTS=-Xmx512m -Xms512m"
+      - path.repo=/usr/share/elasticsearch/backup
+      - "ES_JAVA_OPTS=-Xmx800m -Xms800m"
     networks:
       - elk
     volumes:
-      - cold_data03:/usr/share/elasticsearch/data
+      - elastic_cold:/usr/share/elasticsearch/data
       - elastic_backup:/usr/share/elasticsearch/backup
       - /etc/localtime:/etc/localtime
     deploy:
@@ -88,13 +89,15 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:7.9.0
     configs:
-      #ogirinal
-      - source: logstash_config
-        target: /usr/share/logstash/config/logstash.yml
       - source: logstash_pipeline
         target: /usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 514:5144/udp
+      - 514:5144
     environment:
-      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      - "LS_JAVA_OPTS=-Xmx512m -Xms512m"
+      - xpack.monitoring.enabled=true
+      - monitoring.enabled=false
     networks:
       - elk
     volumes:
@@ -104,56 +107,46 @@ services:
       replicas: 1
       resources:
         limits:
-          cpus: '0.50'
+          cpus: '1.0'
           memory: 800M
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.9.0
     depends_on:
-      - elasticsearch
+      - elasticsearch-hot
+      - elasticsearch-warm
+      - elasticsearch-cold
     ports:
       - "5601:5601"
+    configs:
+      - source: kibana_config
+        target: /usr/share/kibana/config/kibana.yml
     volumes:
       - /etc/localtime:/etc/localtime
       - kibana_data:/usr/share/kibana/config
     networks:
       - elk
     environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch-hot:9200,http://elasticsearch-warm:9200,http://elasticsearch-cold:9200
+      - elasticsearch.url=http://elasticsearch-hot:9200,http://elasticsearch-warm:9200,http://elasticsearch-cold:9200
     deploy:
       resources:
         limits:
           cpus: '0.50'
           memory: 512M
-     depends_on:
-       - elasticsearch-hot
-       - elasticsearch-warm
-       - elasticsearch-cold
 
 configs:
-##elasticsearsh configs
-#  elastic_config:
-#    file: ./elasticsearch/config/elasticsearch.yml
-#Logstash configs
-  logstash_config:
-    file: ./logstash/config/logstash.yml
-  pfsense.grok:
-    file: ./logstash/pipeline/pfsense.grok
   logstash_pipeline:
     file: ./logstash/pipeline/logstash.conf
-  logstash_elasticsearch-template.json:
-    file: ./logstash/pipeline/elasticsearch-template.json
-#kibana config
   kibana_config:
     file: ./kibana/config/kibana.yml
-    
+
 volumes:
   kibana_data:
     driver_opts:
       o: bind
       type: none
       device: /data/elk/kibana
-  elastic_rot:
+  elastic_hot:
     driver_opts:
       o: bind
       type: none
@@ -173,6 +166,7 @@ volumes:
       o: bind
       type: none
       device: /data/elk/elasticsearch/backup
+
 networks:
   elk:
     driver: overlay

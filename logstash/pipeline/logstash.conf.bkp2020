@@ -7,14 +7,12 @@ input {
     }
 }
 
-
-###########
 filter {
-    if "PAN-OS_syslog" in [tags] {
+    if "PAN-OS_SysLog" in [tags] {
+	
+	# Log types are "TRAFFIC", "THREAT", "CONFIG" and "SYSTEM". URL & Wildfire logs are inside Threat logs
+    # Log fields: https://www.paloaltonetworks.com/documentation/80/pan-os/pan-os/monitoring/syslog-field-descriptions
 
-        # Log types are "TRAFFIC", "THREAT", "CONFIG", "SYSTEM" and "HIP-MATCH".
-
-        # Traffic log fields: https://www.paloaltonetworks.com/documentation/80/pan-os/pan-os/monitoring/syslog-field-descriptions#_41809
         if ([message] =~ /TRAFFIC/) {
             csv {
                 source => "message"
@@ -48,29 +46,12 @@ filter {
                 convert => [ "PacketsReceived", "integer" ]
                 convert => [ "PacketsSent", "integer" ]
                 convert => [ "SequenceNumber", "integer" ]
-                #convert => { "[geoip][location]" => "geo_point" }
-                #convert => [ "location", "geo_point" ]
-                
-                add_tag => [ "PAN-OS_traffic"]
-                
-                ###
-		        add_field => { "[geolocation][lat]" => "%{SourceIPGeo.longitude}" }
-		        add_field => { "[geolocation][lon]" => "%{SourceIPGeo.latitude}" }
-		        #rename => {
-                #    "GeoIP.longitude" => "[location][lon]"
-                #    "GeoIP.latitude" => "[location][lat]"
-                #}
-                
-		        #add_field => { "location" => "lat: %{[location][lat]}, lon: %{[location][lon]}" }
-		
+
+                add_tag => [ "PAN-OS_Traffic"]
             }
-#######            
- 
-######    
-            
         }
 
-        # Threat log fields: https://www.paloaltonetworks.com/documentation/80/pan-os/pan-os/monitoring/syslog-field-descriptions#_67983
+
         else if ([message] =~ /THREAT/) {
             csv {
                 source => "message"
@@ -99,7 +80,40 @@ filter {
                 convert => [ "NATSourcePort", "integer" ]
                 convert => [ "SequenceNumber", "integer" ]
       
-                add_tag => ["PAN-OS_threat"]
+                add_tag => ["PAN-OS_Threat"]
+            }
+        }
+
+	else if ([message] =~ /CONFIG/) {
+	    csv {
+		source => "message"
+		columns => [
+		    "FUTURE_USE", "Receive Time", "Serial Number", "Type", "Subtype", "FUTURE_USE", "Generated Time", "Host",
+		    "Virtual System", "Command", "Admin", "Client", "Result", "Configuration Path", "Before Change Detail",
+		    "After Change Detail", "Sequence Number", "Action Flags", "Device Group Hierarchy Level 1",
+		    "Device Group Hierarchy Level 2", "Device Group Hierarchy Level 3", "Device Group Hierarchy Level 4", 
+		    "Virtual System Name", "Device Name"
+		]
+	    }
+
+	    mutate {
+                add_tag => [ "PAN-OS_Config"]
+            }
+        }
+
+	else if ([message] =~ /SYSTEM/) {
+	    csv {
+		source => "message"
+		columns => [
+		    "FUTURE_USE", "Receive Time", "Serial Number", "Type", "Content/Threat Type", "FUTURE_USE", "Generated Time",
+		    "Virtual System", "Event ID", "Object", "FUTURE_USE", "FUTURE_USE", "Module", "Severity", "Description",
+		    "Sequence Number", "Action Flags", "Device Group Hierarchy Level 1", "Device Group Hierarchy Level 2", 
+		    "Device Group Hierarchy Level 3", "Device Group Hierarchy Level 4", "Virtual System Name", "Device Name"
+		]
+	    }
+
+	    mutate {
+                add_tag => [ "PAN-OS_System"]
             }
         }
 
@@ -126,17 +140,14 @@ filter {
         # Geolocate logs that have DestinationIP and if that DestinationIP is a non-RFC1918 address
         if [DestinationIP] and [DestinationIP] !~ "(^127\.0\.0\.1)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)|(^169\.254\.)" {
             geoip {
-	        add_tag => [ "GeoIP" ]
                 source => "DestinationIP"
-                #target => "DestinationIPGeo"
+                target => "DestinationIPGeo"
             }
       
             # Delete 0,0 in DestinationIPGeo.location if equal to 0,0
             if ([DestinationIPGeo.location] and [DestinationIPGeo.location] =~ "0,0") {
-	    #if ([DestinationIPGeo.latitude] and [DestinationIPGeo.logitude] =~ "0,0") {
                 mutate {
-                   # replace => [ "DestinationIPGeo.location", "" ]
-		   replace => [ "GeoIP.location", "" ]
+                    replace => [ "DestinationIPGeo.location", "" ]
                 }
             }
         }
@@ -151,25 +162,49 @@ filter {
                 source => [ "SourceIP", "SourcePort", "DestinationIP", "DestinationPort", "Protocol" ]
             }
         }
-
+        geoip {
+            add_tag => [ "GeoIP" ]
+            source => "src_ip"
+        }
     }
 }
 
-########
-
 output {
 
-    if "PAN-OS_traffic" in [tags] {
+    if "PAN-OS_Traffic" in [tags] {
         elasticsearch {
-            index => "traffic"
-            hosts => ["elasticsearch-hot:9200", "elasticsearch-warm:9200", "elasticsearch-cold:9200"]
+            index => "ifrr-panos-traffic"
+            hosts => ["elasticsearch:9200"]
+            ilm_enabled => true
+            #ilm_rollover_alias =>  "ifrr-panos"
         }
     }
 
-    else if "PAN-OS_threat" in [tags] {
+    else if "PAN-OS_Threat" in [tags] {
         elasticsearch {
-            index => "threat"
-            hosts => ["elasticsearch-hot:9200", "elasticsearch-warm:9200", "elasticsearch-cold:9200"]
+            index => "ifrr-panos-threat"
+            hosts => ["elasticsearch:9200"]
+            ilm_enabled => true
+            #ilm_rollover_alias =>  "ifrr-panos"
         }
     }
+
+    else if "PAN-OS_Config" in [tags] {
+        elasticsearch {
+            index => "ifrr-panos-config"
+            hosts => ["elasticsearch:9200"]
+            ilm_enabled => true
+            #ilm_rollover_alias =>  "ifrr-panos"
+        }
+    }
+
+    else if "PAN-OS_System" in [tags] {
+        elasticsearch {
+            index => "ifrr-panos-system"
+            hosts => ["elasticsearch:9200"]
+            ilm_enabled => true
+            #ilm_rollover_alias =>  "ifrr-panos"
+        }
+    }
+
 }
