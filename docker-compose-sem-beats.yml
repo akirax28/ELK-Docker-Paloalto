@@ -3,11 +3,12 @@ version: '3.7'
 
 services:
   elasticsearch-hot:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
     environment:
       - node.attr.box_type=hot
       - node.attr.size=hot
       - ilm_enabled=true
+#      - bootstrap.memory_lock=true
       - node.name=elasticsearch-hot
       - cluster.name=docker-cluster
       - cluster.initial_master_nodes=elasticsearch-hot,elasticsearsh-warm,elasticsearch-cold
@@ -28,7 +29,7 @@ services:
       - /etc/localtime:/etc/localtime
 
   elasticsearch-warm:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
     environment:
       - node.attr.box_type=warm
       - node.attr.size=warm
@@ -56,7 +57,7 @@ services:
           memory: 512M
 
   elasticsearch-cold:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
     environment:
       - node.attr.box_type=cold
       - node.attr.size=warm
@@ -85,32 +86,32 @@ services:
           cpus: '2.0'
           memory: 512M
 
-#  logstash:
-#    image: docker.elastic.co/logstash/logstash:7.9.3
-#    configs:
-#      - source: logstash_pipeline
-#        target: /usr/share/logstash/pipeline/logstash.conf
-#    ports:
-#      - 514:514/udp
-#      - 514:514
-#    environment:
-#      - "LS_JAVA_OPTS=-Xmx512m -Xms512m"
-#      - xpack.monitoring.enabled=true
-#      - monitoring.enabled=false
-#    networks:
-#      - elk
-#    volumes:
-#      - /etc/localtime:/etc/localtime
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#      resources:
-#        limits:
-#          cpus: '1.0'
-#          memory: 800M
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.9.0
+    configs:
+      - source: logstash_pipeline
+        target: /usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 514:514/udp
+      - 514:514
+    environment:
+      - "LS_JAVA_OPTS=-Xmx512m -Xms512m"
+      - xpack.monitoring.enabled=true
+      - monitoring.enabled=false
+    networks:
+      - elk
+    volumes:
+      - /etc/localtime:/etc/localtime
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 800M
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.3
+    image: docker.elastic.co/kibana/kibana:7.9.0
     depends_on:
       - elasticsearch-hot
       - elasticsearch-warm
@@ -132,27 +133,21 @@ services:
         limits:
           cpus: '0.50'
           memory: 512M
-
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:7.9.3
-    environment:
-      - ELASTICSEARCH_HOSTS=[elasticsearch-hot:9200, elasticsearch-cold:9200, elasticsearch-warm:9200]
-    volumes:
-      - filebeat_data:/usr/share/filebeat/data
-    configs:
-      - source: filebeat_config
-        target: /usr/share/filebeat/filebeat.yml
-    ports:
-      - 514:9001/udp
-      - 514:9001
+#  filebeat:
+#    image: docker.elastic.co/beats/filebeat:7.9.0
+#    volumes:
+#      - filebeat_data:/usr/share/filebeat/data
+#    configs:
+#      - source: filebeat_config
+#        target: /usr/share/filebeat/config/filebeat.yml
 
 configs:
   logstash_pipeline:
     file: ./logstash/pipeline/logstash.conf
   kibana_config:
     file: ./kibana/config/kibana.yml
-  filebeat_config:
-    file: ./filebeat/config/filebeat.yml
+#  filebeat_config:
+#    file: ./filebeat/config/filebeat.yml
 
 volumes:
   kibana_data:

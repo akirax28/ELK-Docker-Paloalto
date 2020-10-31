@@ -1,0 +1,11 @@
+filebeat.config.inputs:
+  enabled: true
+  filebeat.modules:
+    - module: panw
+      panos:
+        enabled: true
+        var.syslog_host: 0.0.0.0
+        var.syslog_port: 514
+
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
